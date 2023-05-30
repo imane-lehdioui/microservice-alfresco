@@ -7,12 +7,10 @@ package com.pj.alfresco.Controllers;
 
 import com.pj.alfresco.Models.ConvnetionMarche;
 import com.pj.alfresco.Repositories.ConvnertionMarcheRepo;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
+import java.io.*;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,13 +77,17 @@ public class ConventionMarchesController {
     }
 
     @GetMapping({"/{idAlfresco}"})
-    public void rec(@PathVariable String idAlfresco, HttpServletResponse response) {
+    public void rec(@PathVariable String idAlfresco, HttpServletResponse response) throws UnsupportedEncodingException {
         Session session = this.conf();
         Document hj = (Document)session.getObject(idAlfresco);
         InputStream input = null;
         OutputStream output = null;
         String id_alfresco = idAlfresco + ";1.0";
-        response.addHeader("Content-Disposition", "attachment; filename=" + this.convnertionMarcheRepo.findByIdAlfresco(id_alfresco).getName());
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Content-Disposition",
+                "attachment; filename=" + URLEncoder.encode(this.convnertionMarcheRepo.findByIdAlfresco(id_alfresco).getName(), "UTF-8"));
+//        response.addHeader("Content-Disposition", "attachment; filename=" + this.convnertionMarcheRepo.findByIdAlfresco(id_alfresco).getName());
+        System.out.println("aa"+URLEncoder.encode(this.convnertionMarcheRepo.findByIdAlfresco(id_alfresco).getName(), "UTF-8"));
 
         try {
             input = hj.getContentStream().getStream();
