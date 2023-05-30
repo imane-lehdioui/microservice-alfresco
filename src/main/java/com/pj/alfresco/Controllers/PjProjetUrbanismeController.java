@@ -165,7 +165,6 @@ public class PjProjetUrbanismeController {
 			properties2.put(PropertyIds.NAME, "[" + pjUpdate.getId() + "] -" + id + "-" + pjUpdate.getName());
 			for (CmisObject child : root.getChildren()) {
 				if (child.getName().equals("ProjetUrbanisme")) {
-
 					ContentStream contentStream = new ContentStreamImpl("" + pjUpdate.getId(),
 							BigInteger.valueOf(file.getSize()), file.getContentType(), new FileInputStream(tempFile));
 					org.apache.chemistry.opencmis.client.api.Document newDoc = ((Folder) child)

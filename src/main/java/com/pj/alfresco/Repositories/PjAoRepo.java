@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.pj.alfresco.Models.PjAo;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface PjAoRepo extends JpaRepository<PjAo, Long> {
 	
 	List<PjAo> findByIdAoOrderByIdDesc(long paramLong);

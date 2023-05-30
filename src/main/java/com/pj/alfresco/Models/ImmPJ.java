@@ -1,30 +1,18 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.pj.alfresco.Models;
 
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 
+import javax.persistence.*;
+import java.util.Date;
+
+
+
 @Entity
-@Table(
-        name = "PjIMMo"
-)
+@Table(name = "PjIMMo")
 public class ImmPJ {
     @Id
     @GeneratedValue
-    @Column(
-            name = "Id",
-            nullable = false
-    )
+    @Column(name = "Id", nullable = false)
     private long id;
     private String idAlfresco;
     private String name;
@@ -61,7 +49,7 @@ public class ImmPJ {
     }
 
     public long getIdImm() {
-        return this.idImm;
+        return idImm;
     }
 
     public void setIdImm(long idImm) {
@@ -69,7 +57,7 @@ public class ImmPJ {
     }
 
     public PjImm getType() {
-        return this.type;
+        return type;
     }
 
     public void setType(PjImm type) {
@@ -77,7 +65,7 @@ public class ImmPJ {
     }
 
     public long getfSize() {
-        return this.fSize;
+        return fSize;
     }
 
     public void setfSize(long fSize) {
@@ -85,7 +73,7 @@ public class ImmPJ {
     }
 
     public Date getDateFile() {
-        return this.dateFile;
+        return dateFile;
     }
 
     public void setDateFile(Date dateFile) {
@@ -96,7 +84,7 @@ public class ImmPJ {
     }
 
     public String getSousModule() {
-        return this.sousModule;
+        return sousModule;
     }
 
     public void setSousModule(String sousModule) {
@@ -104,6 +92,7 @@ public class ImmPJ {
     }
 
     public ImmPJ(long id, String idAlfresco, String name, long idAo, long fSize, Date dateFile, PjImm type, String sModule) {
+        super();
         this.id = id;
         this.idAlfresco = idAlfresco;
         this.name = name;

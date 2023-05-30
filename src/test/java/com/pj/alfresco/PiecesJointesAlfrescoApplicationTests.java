@@ -72,7 +72,6 @@ class PiecesJointesAlfrescoApplicationTests {
 		list.add("Reclamations");
 		list.add("Autorisations");
 		list.add("Activite");
-		list.add("Partagé");
 		return list;
 	}
 	*/

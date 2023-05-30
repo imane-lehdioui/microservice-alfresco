@@ -218,19 +218,21 @@ public class PjUsersController {
 			properties2.put("cmis:objectTypeId", "cmis:document");
 			properties2.put("cmis:name", "[" + pjUpdate.getId() + "] -" + id + "-" + pjUpdate.getName());
 			for (CmisObject child : root.getChildren()) {
-				if (child.getName().equals("Users"))
-					for (CmisObject c : ((Folder) child).getChildren()) {
+				if (child.getName().equals("Users")){
+
+					ContentStream contentStream = new ContentStreamImpl("" + pjUpdate.getId(),BigInteger.valueOf(file.getSize()), file.getContentType(), new FileInputStream(tempFile));
+				Document newDoc = ((Folder) child).createDocument(properties2, contentStream, VersioningState.MAJOR);
+			/*	for (CmisObject c : ((Folder) child).getChildren()) {
 						if (c.getName().equals(String.valueOf(id))) {
 							ContentStreamImpl contentStreamImpl = new ContentStreamImpl("" + pjUpdate.getId(),
 									BigInteger.valueOf(file.getSize()), file.getContentType(),
 									new FileInputStream(tempFile));
 							Document newDoc = ((Folder) c).createDocument(properties2,
-									(ContentStream) contentStreamImpl, VersioningState.MAJOR);
+									(ContentStream) contentStreamImpl, VersioningState.MAJOR);*/
 							pjUpdate.setIdAlfresco(newDoc.getId());
 							this.pjUsersRepo.save(pjUpdate);
 						}
 					}
-			}
 		}
 		return 1L;
 	}
