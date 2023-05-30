@@ -44,7 +44,7 @@ import com.pj.alfresco.Repositories.TypePjAoRepo;
 @RequestMapping({ "/PjAoG" })
 public class PjAoController {
 	@Autowired
-	PjAoRepo pjAoRepo;
+PjAoRepo pjAoRepo;
 
 	@Autowired
 	TypePjAoRepo typePjRepo;
@@ -83,7 +83,6 @@ public class PjAoController {
 		 */
 		return pjAoRepo.findByIdAoOrderByIdDesc(idAo);
 	}
-	
 	@GetMapping({ "/allFiles/{idAo}/{sModule}" })
 	public List<PjAo> allDocsByIdAndSousModule(@PathVariable long idAo, @PathVariable String sModule) {
 		Session session = conf();
@@ -118,7 +117,7 @@ public class PjAoController {
 
 	@RequestMapping(path = { "/multiplefileupload" }, method = { RequestMethod.POST })
 	public long processFile(@RequestParam("file") MultipartFile[] files, @RequestParam("id") long id,
-			@RequestParam("type") long idtypePjSent, @RequestParam("sModule") String sModule) throws IOException {
+							@RequestParam("type") long idtypePjSent, @RequestParam("sModule") String sModule) throws IOException {
 		Session session = conf();
 		Folder root = session.getRootFolder();
 		this.pjAoRepo.deleteBytype(idtypePjSent);
@@ -141,18 +140,22 @@ public class PjAoController {
 			properties2.put("cmis:objectTypeId", "cmis:document");
 			properties2.put("cmis:name", "[" + pjUpdate.getId() + "] -" + id + "-" + pjUpdate.getName());
 			for (CmisObject child : root.getChildren()) {
-				if (child.getName().equals("Ao"))
-					for (CmisObject c : ((Folder) child).getChildren()) {
-						if (c.getName().equals(((TypePjAo) t.get()).getLibelle())) {
-							ContentStreamImpl contentStreamImpl = new ContentStreamImpl("" + pjUpdate.getId(),
+				if (child.getName().equals("Ao")) {
+
+						/*	ContentStreamImpl contentStreamImpl = new ContentStreamImpl("" + pjUpdate.getId(),
 									BigInteger.valueOf(file.getSize()), file.getContentType(),
 									new FileInputStream(tempFile));
 							Document newDoc = ((Folder) c).createDocument(properties2,
-									(ContentStream) contentStreamImpl, VersioningState.MAJOR);
-							pjUpdate.setIdAlfresco(newDoc.getId());
-							this.pjAoRepo.save(pjUpdate);
-						}
-					}
+									(ContentStream) contentStreamImpl, VersioningState.MAJOR);*/
+					ContentStream contentStream = new ContentStreamImpl("" + pjUpdate.getId(),
+							BigInteger.valueOf(file.getSize()), file.getContentType(), new FileInputStream(tempFile));
+					org.apache.chemistry.opencmis.client.api.Document newDoc = ((Folder) child)
+							.createDocument(properties2, contentStream, VersioningState.MAJOR);
+					pjUpdate.setIdAlfresco(newDoc.getId());
+					pjUpdate.setIdAlfresco(newDoc.getId());
+					this.pjAoRepo.save(pjUpdate);
+
+				}
 			}
 		}
 		return 1L;

@@ -17,8 +17,6 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.pj.alfresco.Models.PJCourrie;
-import com.pj.alfresco.Repositories.PJCourriersRepository;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -39,8 +37,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,19 +53,16 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author R.SABRI Date de creation:10/02/20
- * 
+ *
  */
 
 @RestController
 @RequestMapping("/PjCourriersEntrants")
 public class PjCourriersEntrantsController {
 	private static final Logger logger  = LoggerFactory.getLogger(PjCourriersEntrantsController.class);
-			
-	@Autowired
-	PjCourriersEntrantsRepo pjCourriersEntrant;
 
 	@Autowired
-	PJCourriersRepository pjCourriersRepository;
+	PjCourriersEntrantsRepo pjCourriersEntrant;
 
 	@Value("${alfresco.login}")
 	private String login;
@@ -133,8 +126,7 @@ public class PjCourriersEntrantsController {
 		System.out.println("in traitement");
 		Session session = conf();
 		logger.info("Get all files courrierEntrant");
-		List<PjCourriersEntrants>  pjCourriersEntrants = pjCourriersEntrant.findByIdCourrierEntrantOrderByIdDesc(idCourrierEntrant);
-		return pjCourriersEntrants;
+		return pjCourriersEntrant.findByIdCourrierEntrantOrderByIdDesc(idCourrierEntrant);
 	}
 
 	@GetMapping("/{idAlfresco}")
@@ -167,9 +159,9 @@ public class PjCourriersEntrantsController {
 		System.out.println("ID output" + id);
 		Session session = conf();
 		Folder root = session.getRootFolder();
-		
+
 		logger.info("Configuration session  :: courrier entrant");
-		
+
 		for (MultipartFile file : files) {
 			File tempFile = File.createTempFile(file.getOriginalFilename(), null);
 			file.transferTo(tempFile);
@@ -180,7 +172,6 @@ public class PjCourriersEntrantsController {
 			pj.setfSize(file.getSize());
 			pj.setDateFile(new Date());
 			PjCourriersEntrants pjUpdate = pjCourriersEntrant.save(pj);
-			
 			logger.info("Save files in DB  :: courrier entrant");
 
 			Map<String, Object> properties2 = new HashMap<String, Object>();

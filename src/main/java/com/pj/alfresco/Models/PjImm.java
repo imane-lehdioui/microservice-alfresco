@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.pj.alfresco.Models;
 
 import javax.persistence.Entity;
@@ -11,17 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(
-        name = "PjImm"
-)
-public class PjImm {
+@Table(name = "PjImm")
+public class  PjImm {
     @Id
     @GeneratedValue
     private long id;
-    private String libelle;
 
-    public PjImm() {
-    }
+    private String libelle;
 
     public long getId() {
         return this.id;

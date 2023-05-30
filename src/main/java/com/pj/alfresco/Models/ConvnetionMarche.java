@@ -1,29 +1,21 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.pj.alfresco.Models;
 
-import java.util.Date;
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.data.annotation.CreatedDate;
+import java.util.Date;
+
 
 @Entity
-@Table(
-        name = "ConvnetionMarche"
-)
+@Table(name = "ConvnetionMarche")
 public class ConvnetionMarche {
     @Id
     @GeneratedValue
-    @Column(
-            name = "Id",
-            nullable = false
-    )
+    @Column(name = "Id", nullable = false)
     private long id;
     private String idAlfresco;
     private String name;
@@ -33,8 +25,6 @@ public class ConvnetionMarche {
     @CreatedDate
     private Date dateFile;
 
-    public ConvnetionMarche() {
-    }
 
     public long getId() {
         return this.id;
@@ -60,8 +50,9 @@ public class ConvnetionMarche {
         this.name = name;
     }
 
+
     public long getIdConvention() {
-        return this.idConvention;
+        return idConvention;
     }
 
     public void setIdConvention(long idConvention) {
@@ -69,7 +60,7 @@ public class ConvnetionMarche {
     }
 
     public long getfSize() {
-        return this.fSize;
+        return fSize;
     }
 
     public void setfSize(long fSize) {
@@ -77,18 +68,23 @@ public class ConvnetionMarche {
     }
 
     public Date getDateFile() {
-        return this.dateFile;
+        return dateFile;
     }
 
     public void setDateFile(Date dateFile) {
         this.dateFile = dateFile;
     }
 
+
+
     public String getSousModule() {
-        return this.sousModule;
+        return sousModule;
     }
 
     public void setSousModule(String sousModule) {
         this.sousModule = sousModule;
     }
+
+
+
 }
