@@ -3,6 +3,7 @@ package com.pj.alfresco.Models;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 @Entity
 @Table(name = "PJCourrie")
@@ -18,6 +19,8 @@ public class PJCourrie {
   @CreatedDate
   private Date dateFile;
    private String motif;
+   private LocalDate dateTraitement;
+
   public long getId() {
     return id;
   }
@@ -80,5 +83,13 @@ public class PJCourrie {
 
   public void setDateFile(Date dateFile) {
     this.dateFile = dateFile;
+  }
+
+  public LocalDate getDateTraitement() {
+    return dateTraitement;
+  }
+
+  public void setDateTraitement(LocalDate dateTraitement) {
+    this.dateTraitement = dateTraitement;
   }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.*;
 @RestController
 @RequestMapping("/PJCourrierController")
@@ -69,11 +70,13 @@ public class PJCourrierController {
 
     Session session = conf();
     Optional<PJCourrie> r = pjCourriersEntrant.findById(id);
-    String AlfId = r.get().getIdAlfresco();
-    System.out.println(AlfId.substring(0, AlfId.length() - 4));
-    Document hj = (Document) session.getObject(AlfId.substring(0, AlfId.length() - 4));
-    // hj.deleteContentStream();
-    hj.delete();
+    if(r.get()!=null && r.get().getIdAlfresco() != null){
+      String AlfId = r.get().getIdAlfresco();
+      System.out.println(AlfId.substring(0, AlfId.length() - 4));
+      Document hj = (Document) session.getObject(AlfId.substring(0, AlfId.length() - 4));
+      // hj.deleteContentStream();
+      hj.delete();
+    }
     pjCourriersEntrant.deleteById(id);
     logger.info("CourrierEntrant file deleted");
     return r;
@@ -136,40 +139,51 @@ public class PJCourrierController {
     Folder root = session.getRootFolder();
 
     logger.info("Configuration session  :: courrier entrant");
-
-    for (MultipartFile file : files) {
-      File tempFile = File.createTempFile(file.getOriginalFilename(), null);
-      file.transferTo(tempFile);
-      logger.info("File temp created  :: courrier entrant");
+    if(files.length == 0){
       PJCourrie pj = new PJCourrie();
       pj.setIdCourrierEntrant(id);
-      pj.setName(file.getOriginalFilename());
-      pj.setfSize(file.getSize());
       pj.setDateFile(new Date());
       pj.setUserName(user);
       pj.setMotif(sModule);
+      pj.setDateTraitement(LocalDate.now());
       PJCourrie pjUpdate = pjCourriersEntrant.save(pj);
+      System.out.println("pjUpdate= "+ pjUpdate);
+    }else {
+      for (MultipartFile file : files) {
+        File tempFile = File.createTempFile(file.getOriginalFilename(), null);
+        file.transferTo(tempFile);
+        logger.info("File temp created  :: courrier entrant");
+        PJCourrie pj = new PJCourrie();
+        pj.setIdCourrierEntrant(id);
+        pj.setName(file.getOriginalFilename());
+        pj.setfSize(file.getSize());
+        pj.setDateFile(new Date());
+        pj.setUserName(user);
+        pj.setMotif(sModule);
+        PJCourrie pjUpdate = pjCourriersEntrant.save(pj);
 
-      logger.info("Save files in DB  :: courrier entrant");
+        logger.info("Save files in DB  :: courrier entrant");
 
-      Map<String, Object> properties2 = new HashMap<String, Object>();
-      properties2.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
-      //properties2.put(PropertyIds.NAME, "" + pjUpdate.getId()+"-"+ pjUpdate.getName());
-      properties2.put(PropertyIds.NAME, "[" + pjUpdate.getId() + "] -" + id + "-" + pjUpdate.getName());
-      for (CmisObject child : root.getChildren()) {
-        if (child.getName().equals("Courrier")) {
+        Map<String, Object> properties2 = new HashMap<String, Object>();
+        properties2.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+        //properties2.put(PropertyIds.NAME, "" + pjUpdate.getId()+"-"+ pjUpdate.getName());
+        properties2.put(PropertyIds.NAME, "[" + pjUpdate.getId() + "] -" + id + "-" + pjUpdate.getName());
+        for (CmisObject child : root.getChildren()) {
+          if (child.getName().equals("Courrier")) {
 
-          ContentStream contentStream = new ContentStreamImpl("" + pjUpdate.getId(),
-            BigInteger.valueOf(file.getSize()), file.getContentType(), new FileInputStream(tempFile));
-          org.apache.chemistry.opencmis.client.api.Document newDoc = ((Folder) child)
-            .createDocument(properties2, contentStream, VersioningState.MAJOR);
-          pjUpdate.setIdAlfresco(newDoc.getId());
+            ContentStream contentStream = new ContentStreamImpl("" + pjUpdate.getId(),
+                    BigInteger.valueOf(file.getSize()), file.getContentType(), new FileInputStream(tempFile));
+            org.apache.chemistry.opencmis.client.api.Document newDoc = ((Folder) child)
+                    .createDocument(properties2, contentStream, VersioningState.MAJOR);
+            pjUpdate.setIdAlfresco(newDoc.getId());
 
-          pjCourriersEntrant.save(pjUpdate);
-          logger.info("Files inserted :: courrier entrant");
+            pjCourriersEntrant.save(pjUpdate);
+            logger.info("Files inserted :: courrier entrant");
+          }
         }
       }
     }
+
 
     return (new ResponseEntity<>("Successful", null, HttpStatus.OK));
   }
