@@ -1,11 +1,7 @@
 package com.pj.alfresco.Controllers;
 
 import com.pj.alfresco.Models.ConvnetionMarche;
-import com.pj.alfresco.Models.PjAo;
-import com.pj.alfresco.Models.TypePjAo;
 import com.pj.alfresco.Repositories.ConvnertionMarcheRepo;
-import com.pj.alfresco.Repositories.PjAoRepo;
-import com.pj.alfresco.Repositories.TypePjAoRepo;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -35,7 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping({ "/MarcheConvention" })

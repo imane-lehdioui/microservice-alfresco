@@ -1,6 +1,6 @@
 package com.pj.alfresco.Repositories;
 
-import com.pj.alfresco.Models.ConvnetionMarche;
+
 import com.pj.alfresco.Models.PieceJointeConvention;
 import org.springframework.data.jpa.repository.JpaRepository;
 

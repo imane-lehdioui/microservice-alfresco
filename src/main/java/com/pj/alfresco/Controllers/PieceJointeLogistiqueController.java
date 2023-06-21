@@ -1,9 +1,7 @@
 package com.pj.alfresco.Controllers;
 
-
-import com.pj.alfresco.Models.PieceJointeSubvention;
-
-import com.pj.alfresco.Repositories.PieceJointeSubventionRepo;
+import com.pj.alfresco.Repositories.PieceJointeLogistiqueRepo;
+import com.pj.alfresco.Models.PieceJointeLogistique;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -26,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping({ "/PieceJointeSubvention" })
-public class PieceJointeSubventionController {
+@RequestMapping({ "/PieceJointeLogistique" })
+public class PieceJointeLogistiqueController {
 
     @Autowired
-    PieceJointeSubventionRepo pieceJointeSubventionRepo;
+    PieceJointeLogistiqueRepo pieceJointeLogistiqueRepo;
 
     @Value("${alfresco.login}")
     private String login;
@@ -53,7 +51,7 @@ public class PieceJointeSubventionController {
     }
 
     @GetMapping({ "/Allpjs/{idAo}" })
-    public List<PieceJointeSubvention> AllSeverite(@PathVariable long idAo) {
+    public List<PieceJointeLogistique> AllSeverite(@PathVariable long idAo) {
         Session session = conf();
         /*
          * List<PjAo> a = new ArrayList<>(); List<PjAo> listePjs =
@@ -64,13 +62,13 @@ public class PieceJointeSubventionController {
          * objb.setType(((PjAo) listePjs.get(i)).getType());
          * objb.setIdAlfresco(hj.getId()); a.add(objb); }
          */
-        return pieceJointeSubventionRepo.findByIdSubventionOrderByIdDesc(idAo);
+        return pieceJointeLogistiqueRepo.findByIdLogistiqueOrderByIdDesc(idAo);
     }
 
     @GetMapping({ "/allFiles/{idAo}/{sModule}" })
-    public List<PieceJointeSubvention> allDocsByIdAndSousModule(@PathVariable long idAo, @PathVariable String sModule) {
+    public List<PieceJointeLogistique> allDocsByIdAndSousModule(@PathVariable long idAo, @PathVariable String sModule) {
         Session session = conf();
-        return pieceJointeSubventionRepo.findByIdSubventionAndSousModuleOrderByIdDesc(idAo, sModule);
+        return pieceJointeLogistiqueRepo.findByIdLogistiqueAndSousModuleOrderByIdDesc(idAo, sModule);
     }
 
     @GetMapping({ "/{idAlfresco}" })
@@ -83,7 +81,7 @@ public class PieceJointeSubventionController {
         String id_alfresco = idAlfresco + ";1.0";
         response.setCharacterEncoding("UTF-8");
         response.addHeader("Content-Disposition",
-                "attachment; filename=" + URLEncoder.encode(pieceJointeSubventionRepo.findByIdAlfresco(id_alfresco).getName(), "UTF-8"));
+                "attachment; filename=" + URLEncoder.encode(pieceJointeLogistiqueRepo.findByIdAlfresco(id_alfresco).getName(), "UTF-8"));
 //		response.addHeader("Content-Disposition",
 //				"attachment; filename=" + convnertionMarcheRepo.findByIdAlfresco(id_alfresco).getName());
         try {
@@ -96,6 +94,8 @@ public class PieceJointeSubventionController {
         }
     }
 
+
+
     @RequestMapping(path = { "/multiplefileupload" }, method = { RequestMethod.POST })
     public long processFile(@RequestParam("file") MultipartFile[] files, @RequestParam("id") long id,
                             @RequestParam("sModule") String sModule) throws IOException {
@@ -104,13 +104,13 @@ public class PieceJointeSubventionController {
         for (MultipartFile file : files) {
             File tempFile = File.createTempFile(file.getOriginalFilename(), null);
             file.transferTo(tempFile);
-            PieceJointeSubvention pj = new PieceJointeSubvention();
-            pj.setIdSubvention(id);
+            PieceJointeLogistique pj = new PieceJointeLogistique();
+            pj.setIdLogistique(id);
             pj.setName(file.getOriginalFilename());
             pj.setfSize(file.getSize());
             pj.setSousModule(sModule);
             pj.setDateFile(new Date());
-            PieceJointeSubvention pjUpdate =this.pieceJointeSubventionRepo.save(pj);
+            PieceJointeLogistique pjUpdate = (PieceJointeLogistique) this.pieceJointeLogistiqueRepo.save(pj);
             System.out.println("File inserted !");
 
             Map<String, Object> properties2 = new HashMap<>();
@@ -118,19 +118,23 @@ public class PieceJointeSubventionController {
             properties2.put("cmis:name", "[" + pjUpdate.getId() + "] -" + id + "-" + pjUpdate.getName());
             for (CmisObject child : root.getChildren()) {
                 if (child.getName().equals("Ao")) {
+
+						/*	ContentStreamImpl contentStreamImpl = new ContentStreamImpl("" + pjUpdate.getId(),
+									BigInteger.valueOf(file.getSize()), file.getContentType(),
+									new FileInputStream(tempFile));
+							Document newDoc = ((Folder) c).createDocument(properties2,
+									(ContentStream) contentStreamImpl, VersioningState.MAJOR);*/
                     ContentStream contentStream = new ContentStreamImpl("" + pjUpdate.getId(),
                             BigInteger.valueOf(file.getSize()), file.getContentType(), new FileInputStream(tempFile));
                     Document newDoc = ((Folder) child)
                             .createDocument(properties2, contentStream, VersioningState.MAJOR);
                     pjUpdate.setIdAlfresco(newDoc.getId());
                     pjUpdate.setIdAlfresco(newDoc.getId());
-                    this.pieceJointeSubventionRepo.save(pjUpdate);
+                    this.pieceJointeLogistiqueRepo.save(pjUpdate);
 
                 }
             }
         }
         return 1L;
     }
-
 }
-
