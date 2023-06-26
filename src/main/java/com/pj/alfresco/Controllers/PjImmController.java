@@ -2,9 +2,7 @@ package com.pj.alfresco.Controllers;
 
 import com.pj.alfresco.Models.*;
 import com.pj.alfresco.Repositories.PJImmRepository;
-import com.pj.alfresco.Repositories.PjAoRepo;
 import com.pj.alfresco.Repositories.PjImmRepo;
-import com.pj.alfresco.Repositories.TypePjAoRepo;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
