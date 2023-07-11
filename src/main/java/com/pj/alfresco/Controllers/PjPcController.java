@@ -9,11 +9,7 @@ package com.pj.alfresco.Controllers;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
 import com.pj.alfresco.Models.PjPc;
@@ -31,12 +27,7 @@ import org.apache.chemistry.opencmis.commons.impl.IOUtils;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -63,6 +54,20 @@ public class PjPcController {
 		parameter.put("org.apache.chemistry.opencmis.binding.spi.type", BindingType.ATOMPUB.value());
 		Session session = ((Repository)sessionFactoryImpl.getRepositories(parameter).get(0)).createSession();
 		return session;
+	}
+
+	@DeleteMapping("/{id}")
+	public Optional<PjPc> delete(@PathVariable long id) {
+
+		Session session = conf();
+		Optional<PjPc> r = pjPcRepo.findById(id);
+		String AlfId = r.get().getIdAlfresco();
+		System.out.println(AlfId.substring(0, AlfId.length() - 4));
+		Document hj = (Document) session.getObject(AlfId.substring(0, AlfId.length() - 4));
+		// hj.deleteContentStream();
+		hj.delete();
+		pjPcRepo.deleteById(id);
+		return r;
 	}
 
 	@GetMapping({"/Allpjs/{idPc}"})
