@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.pj.alfresco.Models.PjMagasin;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -27,12 +28,7 @@ import org.apache.chemistry.opencmis.commons.impl.IOUtils;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pj.alfresco.Models.PjAo;
@@ -87,6 +83,20 @@ PjAoRepo pjAoRepo;
 	public List<PjAo> allDocsByIdAndSousModule(@PathVariable long idAo, @PathVariable String sModule) {
 		Session session = conf();
 		return pjAoRepo.findByIdAoAndSousModuleOrderByIdDesc(idAo, sModule);
+	}
+
+	@DeleteMapping("/{id}")
+	public Optional<PjAo> delete(@PathVariable long id) {
+
+		Session session = conf();
+		Optional<PjAo> r = pjAoRepo.findById(id);
+		String AlfId = r.get().getIdAlfresco();
+		System.out.println(AlfId.substring(0, AlfId.length() - 4));
+		Document hj = (Document) session.getObject(AlfId.substring(0, AlfId.length() - 4));
+		// hj.deleteContentStream();
+		hj.delete();
+		pjAoRepo.deleteById(id);
+		return r;
 	}
 
 	@GetMapping({ "/{idAlfresco}" })
